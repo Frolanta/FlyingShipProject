@@ -19,6 +19,8 @@ public class ShipController : MonoBehaviour {
     private bool barrelLeft = false;
     private bool barrelRight = false;
 
+    public GameObject plane;
+
   	void Start ()
     {
       this.ship = Instantiate(shipPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;

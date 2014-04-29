@@ -5,7 +5,7 @@ public class ShipCrosshair : MonoBehaviour {
 
   public Transform crosshair;
   public float ratioSpeedSize = 1.0f;
-  private float min = 0.20f;
+  private float min = 0.40f;
   private bool zoomed = false;
 
 	// Use this for initialization

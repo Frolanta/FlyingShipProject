@@ -4,6 +4,7 @@ using System.Collections;
 public class MachinGunFire : MonoBehaviour {
 
   public float life = 3.0f;
+  public int damage;
   public GameObject sparks;
 
 	// Use this for initialization
@@ -21,6 +22,7 @@ public class MachinGunFire : MonoBehaviour {
 
   void OnCollisionEnter(Collision collision) {
     ContactPoint contact = collision.contacts[0];
+    collision.collider.transform.gameObject.SendMessage("makeDamage", damage, SendMessageOptions.DontRequireReceiver);
     Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
     Vector3 pos = contact.point;
     Instantiate(sparks, pos, rot);
