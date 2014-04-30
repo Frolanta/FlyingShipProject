@@ -9,6 +9,12 @@ public class ShipWeapons : MonoBehaviour {
   public float machinGunFireRate = 0.5f;
   public Transform startFire1;
   public Transform startFire2;
+  public Transform railStart;
+
+  public GameObject railPrefab;
+
+  public bool machinGun = true;
+  public bool railGun = false;
 	void Start () {
 
 	}
@@ -20,12 +26,16 @@ public class ShipWeapons : MonoBehaviour {
 
   public void startPrimaryFire()
   {
-    InvokeRepeating("fireMachinGun", 0.05f, this.machinGunFireRate);
+    if (machinGun)
+      InvokeRepeating("fireMachinGun", 0.05f, this.machinGunFireRate);
+    else
+      fireRail();
   }
 
   public void stopPrimaryFire()
   {
-    CancelInvoke("fireMachinGun");
+    if (machinGun)
+      CancelInvoke("fireMachinGun");
   }
 
   void fireMachinGun()
@@ -36,6 +46,38 @@ public class ShipWeapons : MonoBehaviour {
     GameObject instantiatedProjectile2 = Instantiate(machinGunPrefab,startFire2.position, startFire2.rotation) as GameObject;
     Physics.IgnoreCollision(this.gameObject.collider, instantiatedProjectile2.collider);
     instantiatedProjectile2.rigidbody.velocity = startFire2.TransformDirection(new Vector3(0, 0, machinGunSpeed));
+  }
+
+  void  fireRail()
+  {
+    //Debug.DrawRay (railStart.position,  railStart.forward * 500, Color.green);
+    GameObject rail = Instantiate(railPrefab, railStart.position, railStart.rotation) as GameObject;
+    LineRenderer line = rail.GetComponent<LineRenderer>();
+    line.useWorldSpace = false;
+    line.SetVertexCount(2);
+    RaycastHit[] hits;
+    hits = Physics.RaycastAll(railStart.position, railStart.forward, 500.0F);
+    line.SetPosition(1, new Vector3(0,0,500));
+    int i = 0;
+    while (i < hits.Length)
+    {
+      RaycastHit hit = hits[i];
+      print(hit.collider.transform.gameObject.name);
+      hit.collider.transform.gameObject.SendMessage("makeDamage", 100 / (hits.Length - i), SendMessageOptions.DontRequireReceiver);
+      i++;
+    }
+  }
+
+  public void selectMachinGun()
+  {
+    this.machinGun = true;
+    this.railGun = false;
+  }
+
+  public void selectRailGun()
+  {
+    this.railGun = true;
+    this.machinGun = false;
   }
 
 }

@@ -175,5 +175,17 @@ public class ShipController : MonoBehaviour {
         this.shipMovementsScript.zoom();
       }
 
+      if (Input.GetKeyDown(KeyCode.Alpha1))
+      {
+        this.shipWeaponsScript.stopPrimaryFire();
+        this.shipWeaponsScript.selectMachinGun();
+      }
+
+      if (Input.GetKeyDown(KeyCode.Alpha2))
+      {
+        this.shipWeaponsScript.stopPrimaryFire();
+        this.shipWeaponsScript.selectRailGun();
+      }
+
   	}
 }
