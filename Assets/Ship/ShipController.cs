@@ -23,7 +23,7 @@ public class ShipController : MonoBehaviour {
 
   	void Start ()
     {
-      this.ship = Instantiate(shipPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0)) as GameObject;
+      this.ship = Network.Instantiate(shipPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0), 0) as GameObject;
       this.camScript.setTarget(this.ship.transform);
       this.camScriptCrossHair.setTarget(this.ship.transform);
       this.shipMovementsScript = ship.GetComponent<ShipMovements>();

@@ -27,7 +27,9 @@ public class ShipWeapons : MonoBehaviour {
   public void startPrimaryFire()
   {
     if (machinGun)
+    {
       InvokeRepeating("fireMachinGun", 0.05f, this.machinGunFireRate);
+    }
     else
       fireRail();
   }
@@ -40,10 +42,10 @@ public class ShipWeapons : MonoBehaviour {
 
   void fireMachinGun()
   {
-    GameObject instantiatedProjectile = Instantiate(machinGunPrefab,startFire1.position, startFire1.rotation) as GameObject;
+    GameObject instantiatedProjectile = Network.Instantiate(machinGunPrefab,startFire1.position, startFire1.rotation, 0) as GameObject;
     Physics.IgnoreCollision(this.gameObject.collider, instantiatedProjectile.collider);
     instantiatedProjectile.rigidbody.velocity = startFire1.TransformDirection(new Vector3(0, 0, machinGunSpeed));
-    GameObject instantiatedProjectile2 = Instantiate(machinGunPrefab,startFire2.position, startFire2.rotation) as GameObject;
+    GameObject instantiatedProjectile2 = Network.Instantiate(machinGunPrefab,startFire2.position, startFire2.rotation, 0) as GameObject;
     Physics.IgnoreCollision(this.gameObject.collider, instantiatedProjectile2.collider);
     instantiatedProjectile2.rigidbody.velocity = startFire2.TransformDirection(new Vector3(0, 0, machinGunSpeed));
   }
@@ -51,7 +53,7 @@ public class ShipWeapons : MonoBehaviour {
   void  fireRail()
   {
     //Debug.DrawRay (railStart.position,  railStart.forward * 500, Color.green);
-    GameObject rail = Instantiate(railPrefab, railStart.position, railStart.rotation) as GameObject;
+    GameObject rail = Network.Instantiate(railPrefab, railStart.position, railStart.rotation, 0) as GameObject;
     LineRenderer line = rail.GetComponent<LineRenderer>();
     line.useWorldSpace = false;
     line.SetVertexCount(2);
