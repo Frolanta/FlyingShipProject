@@ -58,12 +58,46 @@ public class Networkmanager : MonoBehaviour {
 
   void OnServerInitialized()
   {
-      Application.LoadLevel("ship");
+      networkView.RPC("ClientLoadLevel", RPCMode.OthersBuffered);
+      Application.LoadLevel(1);
   }
 
-  void OnConnectedToServer()
+  [RPC]
+  private void ClientLoadLevel()
   {
-      print("connect");
-      Application.LoadLevel("ship");
+      //Stop the message queue and load the game level
+      Network.isMessageQueueRunning = false;
+      Network.SetLevelPrefix(1);
+      Application.LoadLevel(1);
+  }
+
+  private void OnLevelWasLoaded(int level)
+  {
+      //Resume the message queue upon loading the game scene
+      Network.isMessageQueueRunning = true;
+  }
+
+  internal static void Disconnect()
+  {
+      //Disconnect from the server
+      Network.Disconnect();
+
+      //Return to the menu if neccesairy
+      if (Application.loadedLevel != 0)
+          Application.LoadLevel(0);
+  }
+
+  void OnPlayerDisconnected(NetworkPlayer player)
+  {
+      //When a player disconnects, destroy his objects
+      Network.RemoveRPCs(player, 0);
+      Network.DestroyPlayerObjects(player);
+  }
+
+  private void OnDisconnectedFromServer()
+  {
+      //Return to the menu on disconnect
+      if (Application.loadedLevel != 1)
+          Application.LoadLevel(1);
   }
 }

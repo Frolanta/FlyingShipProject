@@ -31,7 +31,10 @@ public class ShipWeapons : MonoBehaviour {
       InvokeRepeating("fireMachinGun", 0.05f, this.machinGunFireRate);
     }
     else
+    {
+      networkView.RPC("fireRail", RPCMode.OthersBuffered);
       fireRail();
+    }
   }
 
   public void stopPrimaryFire()
@@ -43,14 +46,23 @@ public class ShipWeapons : MonoBehaviour {
   void fireMachinGun()
   {
     GameObject instantiatedProjectile = Network.Instantiate(machinGunPrefab,startFire1.position, startFire1.rotation, 0) as GameObject;
-    Physics.IgnoreCollision(this.gameObject.collider, instantiatedProjectile.collider);
+    networkView.RPC("ignoreCollisionWidth", RPCMode.OthersBuffered, instantiatedProjectile.networkView.viewID);
+    ignoreCollisionWidth(instantiatedProjectile.networkView.viewID);
     instantiatedProjectile.rigidbody.velocity = startFire1.TransformDirection(new Vector3(0, 0, machinGunSpeed));
     GameObject instantiatedProjectile2 = Network.Instantiate(machinGunPrefab,startFire2.position, startFire2.rotation, 0) as GameObject;
-    Physics.IgnoreCollision(this.gameObject.collider, instantiatedProjectile2.collider);
+    networkView.RPC("ignoreCollisionWidth", RPCMode.OthersBuffered, instantiatedProjectile2.networkView.viewID);
     instantiatedProjectile2.rigidbody.velocity = startFire2.TransformDirection(new Vector3(0, 0, machinGunSpeed));
+    ignoreCollisionWidth(instantiatedProjectile2.networkView.viewID);
   }
 
-  void  fireRail()
+  [RPC]
+  void ignoreCollisionWidth(NetworkViewID fireId)
+  {
+    Collider fire = NetworkView.Find(fireId).gameObject.collider;
+    Physics.IgnoreCollision(this.gameObject.collider, fire);
+  }
+
+  [RPC]void  fireRail()
   {
     //Debug.DrawRay (railStart.position,  railStart.forward * 500, Color.green);
     GameObject rail = Network.Instantiate(railPrefab, railStart.position, railStart.rotation, 0) as GameObject;

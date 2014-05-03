@@ -13,7 +13,8 @@ public class ShipCollision : MonoBehaviour {
 
 	}
 
-  void OnCollisionEnter(Collision collision) {
+  void OnCollisionEnter(Collision collision)
+  {
     //ContactPoint contact = collision.contacts[0];
     //this.rigidbody.AddForceAtPosition(new Vector3(1000,1000,1000), contact.point);
   }

@@ -36,7 +36,9 @@ public class ShipMovements : MonoBehaviour {
   private ParticleSystem reactorWingsTopRight;
   private ParticleSystem reactorWingsTopLeft;
 
+  private bool boost_enabled = false;
   private bool zoomEnabled = false;
+
 	void Awake ()
   {
     //instantiate reactors
@@ -100,7 +102,7 @@ public class ShipMovements : MonoBehaviour {
 
   void FixedUpdate()
   {
-    scriptCrosshair.setSize(this.gameObject.rigidbody.velocity);
+    this.scriptCrosshair.setSize(this.gameObject.rigidbody.velocity);
   }
 
 	// Update is called once per frame
@@ -163,11 +165,13 @@ public class ShipMovements : MonoBehaviour {
       this.rigidbody.AddRelativeForce(Vector3.forward * speed);
   }
 
+  [RPC]
   public void startMoveFront()
   {
       reactor.enableEmission = true;
   }
 
+  [RPC]
   public void stopMoveFront()
   {
       reactor.enableEmission = false;
@@ -226,14 +230,22 @@ public class ShipMovements : MonoBehaviour {
 
   public void startBoost()
   {
-    this.speed *= 4;
-    this.straff *= 2;
+    if (!this.boost_enabled)
+    {
+      this.speed *= 4;
+      this.straff *= 2;
+      this.boost_enabled = true;
+    }
   }
 
   public void stopBoost()
   {
-    this.speed /= 4;
-    this.straff /= 2;
+    if (this.boost_enabled)
+    {
+      this.speed /= 4;
+      this.straff /= 2;
+      this.boost_enabled = false;
+    }
   }
 
   public void zoom()

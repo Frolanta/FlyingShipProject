@@ -41,6 +41,13 @@ using System.Collections;
            this.target = t;
          }
 
+         public void resetZoom()
+         {
+           if (this.zoomEnabled)
+             this.distance += this.zoom_value;
+           this.zoomEnabled = false;
+         }
+
          public void zoom()
          {
              if (this.zoomEnabled)

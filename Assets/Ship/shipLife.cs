@@ -16,13 +16,20 @@ public class shipLife : MonoBehaviour {
 
   void makeDamage(int dmg)
   {
-    this.life -= dmg;
-    if (this.life <= 0)
-      Destroy(this.gameObject);
+    if (Network.isServer)
+    {
+      this.life -= dmg;
+      if (this.life <= 0)
+        Network.Destroy(this.gameObject);
+    }
   }
 
   void OnDestroy()
   {
+    if (networkView.isMine)
+    {
+      GameObject.Find("Controller").GetComponent<ShipController>().spawnNewPlayer();
+    }
     print("ship Destroyed");
   }
 }
