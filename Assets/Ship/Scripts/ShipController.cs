@@ -7,6 +7,7 @@ public class ShipController : MonoBehaviour {
     public GameObject shipPrefab;
     public SmoothFollow2 camScript;
     public SmoothFollow2 camScriptCrossHair;
+    public ShipUI scriptUI;
     private ShipMovements shipMovementsScript;
     private ShipWeapons shipWeaponsScript;
     public Camera cam;
@@ -37,12 +38,15 @@ public class ShipController : MonoBehaviour {
       barrelLeft = false;
       barrelRight = false;
       this.ship = Network.Instantiate(shipPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0), 0) as GameObject;
+      //this.ship.rigidbody.interpolation = RigidbodyInterpolation.Interpolate; // use this if add velocity in Update and not in Fixed update
       this.camScript.setTarget(this.ship.transform);
       this.camScriptCrossHair.setTarget(this.ship.transform);
       this.shipMovementsScript = ship.GetComponent<ShipMovements>();
       this.shipWeaponsScript = ship.GetComponent<ShipWeapons>();
       this.camScript.resetZoom();
       this.camScriptCrossHair.resetZoom();
+      this.scriptUI.setScriptLife(ship.GetComponent<shipLife>());
+      this.scriptUI.setScriptMovements(this.shipMovementsScript);
   	}
 
     void  FixedUpdate()
@@ -86,60 +90,70 @@ public class ShipController : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
           movingBack = true;
+          ship.networkView.RPC("startMoveBack", RPCMode.OthersBuffered);
           this.shipMovementsScript.startMoveBack();
         }
 
         if (Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.S))
         {
           movingBack = false;
+          ship.networkView.RPC("stopMoveBack", RPCMode.OthersBuffered);
           this.shipMovementsScript.stopMoveBack();
         }
 
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
         {
           movingRight = true;
+          ship.networkView.RPC("startMovingRight", RPCMode.OthersBuffered);
           this.shipMovementsScript.startMovingRight();
         }
 
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
         {
           movingLeft = true;
+          ship.networkView.RPC("startMovingLeft", RPCMode.OthersBuffered);
           this.shipMovementsScript.startMovingLeft();
         }
 
         if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
         {
           movingRight = false;
+          ship.networkView.RPC("stopMovingRight", RPCMode.OthersBuffered);
           this.shipMovementsScript.stopMovingRight();
         }
 
         if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
         {
           movingLeft = false;
+          ship.networkView.RPC("stopMovingLeft", RPCMode.OthersBuffered);
           this.shipMovementsScript.stopMovingLeft();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
           barrelRight = true;
+          ship.networkView.RPC("startBarrelRight", RPCMode.OthersBuffered);
           this.shipMovementsScript.startBarrelRight();
         }
 
         if (Input.GetKeyUp(KeyCode.E))
         {
           barrelRight = false;
+          ship.networkView.RPC("stopBarrelRight", RPCMode.OthersBuffered);
           this.shipMovementsScript.stopBarrelRight();
         }
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
           barrelLeft = true;
+          ship.networkView.RPC("startBarrelLeft", RPCMode.OthersBuffered);
           this.shipMovementsScript.startBarrelLeft();
         }
 
         if (Input.GetKeyUp(KeyCode.Q))
         {
           barrelLeft = false;
+          ship.networkView.RPC("stopBarrelLeft", RPCMode.OthersBuffered);
           this.shipMovementsScript.stopBarrelLeft();
         }
 

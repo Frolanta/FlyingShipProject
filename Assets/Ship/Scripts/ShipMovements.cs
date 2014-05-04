@@ -39,6 +39,8 @@ public class ShipMovements : MonoBehaviour {
   private bool boost_enabled = false;
   private bool zoomEnabled = false;
 
+  private float energie = 100.0f;
+
 	void Awake ()
   {
     //instantiate reactors
@@ -100,6 +102,31 @@ public class ShipMovements : MonoBehaviour {
     this.reactorWingsTopLeft.enableEmission = false;
 	}
 
+  void  Update()
+  {
+    if (this.boost_enabled)
+    {
+      if (energie > 0.0f)
+      {
+        energie -= Time.deltaTime * 50;
+        if (energie < 0.0f)
+        {
+          energie = 0.0f;
+          stopBoost();
+        }
+      }
+    }
+    else
+    {
+      if (energie < 100.0f)
+      {
+        energie += Time.deltaTime * 10;
+        if (energie > 100.0f)
+          energie = 100.0f;
+      }
+    }
+  }
+
   void FixedUpdate()
   {
     this.scriptCrosshair.setSize(this.gameObject.rigidbody.velocity);
@@ -116,24 +143,28 @@ public class ShipMovements : MonoBehaviour {
     this.rigidbody.AddRelativeForce(Vector3.left * straff);
   }
 
+  [RPC]
   public void startMovingLeft()
   {
     reactorSideFrontRight.enableEmission = true;
     reactorSideBackRight.enableEmission = true;
   }
 
+  [RPC]
   public void stopMovingLeft()
   {
     reactorSideFrontRight.enableEmission = false;
     reactorSideBackRight.enableEmission = false;
   }
 
+  [RPC]
   public void startMovingRight()
   {
     reactorSideFrontLeft.enableEmission = true;
     reactorSideBackLeft.enableEmission = true;
   }
 
+  [RPC]
   public void stopMovingRight()
   {
     reactorSideFrontLeft.enableEmission = false;
@@ -182,12 +213,14 @@ public class ShipMovements : MonoBehaviour {
       this.rigidbody.AddRelativeForce(Vector3.back * (speed / 2));
   }
 
+  [RPC]
   public void startMoveBack()
   {
       reactorFrontLeft.enableEmission = true;
       reactorFrontRight.enableEmission = true;
   }
 
+  [RPC]
   public void stopMoveBack()
   {
       reactorFrontLeft.enableEmission = false;
@@ -199,12 +232,14 @@ public class ShipMovements : MonoBehaviour {
     this.rigidbody.AddRelativeTorque(Vector3.back * rotation);
   }
 
+  [RPC]
   public void startBarrelRight()
   {
     reactorWingsTopRight.enableEmission = true;
     reactorWingsBottomLeft.enableEmission = true;
   }
 
+  [RPC]
   public void stopBarrelRight()
   {
     reactorWingsTopRight.enableEmission = false;
@@ -216,12 +251,14 @@ public class ShipMovements : MonoBehaviour {
     this.rigidbody.AddRelativeTorque(Vector3.forward * rotation);
   }
 
+  [RPC]
   public void startBarrelLeft()
   {
     reactorWingsTopLeft.enableEmission = true;
     reactorWingsBottomRight.enableEmission = true;
   }
 
+  [RPC]
   public void stopBarrelLeft()
   {
     reactorWingsTopLeft.enableEmission = false;
@@ -232,7 +269,7 @@ public class ShipMovements : MonoBehaviour {
   {
     if (!this.boost_enabled)
     {
-      this.speed *= 4;
+      this.speed *= 2;
       this.straff *= 2;
       this.boost_enabled = true;
     }
@@ -242,7 +279,7 @@ public class ShipMovements : MonoBehaviour {
   {
     if (this.boost_enabled)
     {
-      this.speed /= 4;
+      this.speed /= 2;
       this.straff /= 2;
       this.boost_enabled = false;
     }
@@ -265,5 +302,10 @@ public class ShipMovements : MonoBehaviour {
       this.rotation /= 4;
       this.zoomEnabled = true;
     }
+  }
+
+  public float getEnergie()
+  {
+    return this.energie;
   }
 }

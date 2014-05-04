@@ -3,7 +3,7 @@ using System.Collections;
 
 public class shipLife : MonoBehaviour {
 
-  public int life = 100;
+  public float life = 100;
 	// Use this for initialization
 	void Start () {
 
@@ -31,5 +31,10 @@ public class shipLife : MonoBehaviour {
       GameObject.Find("Controller").GetComponent<ShipController>().spawnNewPlayer();
     }
     print("ship Destroyed");
+  }
+
+  public float getLife()
+  {
+    return this.life;
   }
 }
