@@ -19,25 +19,24 @@ public class ShipController : MonoBehaviour {
     private bool movingBack = false;
     private bool barrelLeft = false;
     private bool barrelRight = false;
-
-    public GameObject plane;
+    private GameObject[] respawns;
 
     void Start()
     {
-      Screen.showCursor = false;
-      Screen.lockCursor = true;
+      this.respawns = GameObject.FindGameObjectsWithTag("Respawn");
       spawnNewPlayer();
     }
 
   	public void spawnNewPlayer()
     {
+      Transform spawn = respawns[Random.Range(0, this.respawns.Length)].transform;
       movingLeft = false;
       movingRight = false;
       movingFront = false;
       movingBack = false;
       barrelLeft = false;
       barrelRight = false;
-      this.ship = Network.Instantiate(shipPrefab, Vector3.zero, new Quaternion(0, 0, 0, 0), 0) as GameObject;
+      this.ship = Network.Instantiate(shipPrefab, spawn.position, spawn.rotation, 0) as GameObject;
       //this.ship.rigidbody.interpolation = RigidbodyInterpolation.Interpolate; // use this if add velocity in Update and not in Fixed update
       this.camScript.setTarget(this.ship.transform);
       this.camScriptCrossHair.setTarget(this.ship.transform);
@@ -46,6 +45,7 @@ public class ShipController : MonoBehaviour {
       this.camScript.resetZoom();
       this.camScriptCrossHair.resetZoom();
       this.scriptUI.setScriptLife(ship.GetComponent<shipLife>());
+      this.scriptUI.setScriptWeapons(ship.GetComponent<ShipWeapons>());
       this.scriptUI.setScriptMovements(this.shipMovementsScript);
   	}
 

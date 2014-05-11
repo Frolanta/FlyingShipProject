@@ -15,13 +15,24 @@ public class ShipWeapons : MonoBehaviour {
 
   public bool machinGun = true;
   public bool railGun = false;
+  private bool railReady = true;
+  public float railLoadingTime = 5.0f;
+  private float railLoading;
 	void Start () {
-
+    railLoading = railLoadingTime;
 	}
 
 	// Update is called once per frame
-	void Update () {
-
+	void Update ()
+  {
+    if (railReady == false)
+    {
+      railLoading += Time.deltaTime;
+      if (railLoading >= railLoadingTime)
+      {
+        railReady = true;
+      }
+    }
 	}
 
   public void startPrimaryFire()
@@ -30,7 +41,7 @@ public class ShipWeapons : MonoBehaviour {
     {
       InvokeRepeating("fireMachinGun", 0.05f, this.machinGunFireRate);
     }
-    else
+    else if (this.railReady)
     {
       networkView.RPC("fireRail", RPCMode.OthersBuffered);
       fireRail();
@@ -64,6 +75,8 @@ public class ShipWeapons : MonoBehaviour {
 
   [RPC]void  fireRail()
   {
+    this.railReady = false;
+    railLoading = 0.0f;
     //Debug.DrawRay (railStart.position,  railStart.forward * 500, Color.green);
     GameObject rail = Network.Instantiate(railPrefab, railStart.position, railStart.rotation, 0) as GameObject;
     LineRenderer line = rail.GetComponent<LineRenderer>();
@@ -92,6 +105,11 @@ public class ShipWeapons : MonoBehaviour {
   {
     this.railGun = true;
     this.machinGun = false;
+  }
+
+  public float getRailLoading()
+  {
+    return this.railLoading;
   }
 
 }

@@ -3,13 +3,19 @@ using System.Collections;
 
 public class Networkmanager : MonoBehaviour {
 
-  private const string typeName = "shipproject";
-  private const string gameName = "alpharoom";
+  private const string typeName = "shipProject_alpha_1.0";
+  private string gameName = "AlphaRoom";
   private HostData[] hostList;
+  private string pseudo = "Player";
 
   void Awake()
   {
     DontDestroyOnLoad(this.gameObject);
+  }
+
+  void Start()
+  {
+    RefreshHostList();
   }
 
   private void StartServer()
@@ -18,22 +24,25 @@ public class Networkmanager : MonoBehaviour {
       MasterServer.RegisterHost(typeName, gameName);
   }
 
-
   void OnGUI()
   {
     if (!Network.isClient && !Network.isServer)
     {
-        if (GUI.Button(new Rect(100, 100, 250, 100), "Start Server"))
+        if (GUI.Button(new Rect(10, 10, 250, 100), "Start Server"))
             StartServer();
 
-        if (GUI.Button(new Rect(100, 250, 250, 100), "Refresh Hosts"))
+        gameName = GUI.TextField(new Rect(10, 150, 200, 20), gameName, 30);
+
+        if (GUI.Button(new Rect(10, 200, 250, 100), "Refresh Hosts"))
             RefreshHostList();
+
+        pseudo = GUI.TextField(new Rect(10, 350, 200, 20), pseudo, 30);
 
         if (hostList != null)
         {
             for (int i = 0; i < hostList.Length; i++)
             {
-                if (GUI.Button(new Rect(400, 100 + (110 * i), 300, 100), hostList[i].gameName))
+                if (GUI.Button(new Rect(300, 10 + (110 * i), 300, 100), hostList[i].gameName))
                     JoinServer(hostList[i]);
             }
         }
