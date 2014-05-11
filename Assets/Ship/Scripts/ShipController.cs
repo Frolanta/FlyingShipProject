@@ -10,6 +10,7 @@ public class ShipController : MonoBehaviour {
     public ShipUI scriptUI;
     private ShipMovements shipMovementsScript;
     private ShipWeapons shipWeaponsScript;
+    private ShipCrosshair shipCrosshairScript;
     public Camera cam;
     public float vecticalSensibility = 0.2f;
     public float horizontalSensibility = 0.4f;
@@ -42,6 +43,7 @@ public class ShipController : MonoBehaviour {
       this.camScriptCrossHair.setTarget(this.ship.transform);
       this.shipMovementsScript = ship.GetComponent<ShipMovements>();
       this.shipWeaponsScript = ship.GetComponent<ShipWeapons>();
+      this.shipCrosshairScript = ship.GetComponent<ShipCrosshair>();
       this.camScript.resetZoom();
       this.camScriptCrossHair.resetZoom();
       this.scriptUI.setScriptLife(ship.GetComponent<shipLife>());
@@ -65,7 +67,13 @@ public class ShipController : MonoBehaviour {
           this.shipMovementsScript.barrelLeft();
         if (barrelRight)
           this.shipMovementsScript.barrelRight();
+
+        if (movingLeft || movingRight || movingFront || movingBack || barrelLeft || barrelRight)
+          this.shipCrosshairScript.setSize(true);
+        else
+          this.shipCrosshairScript.setSize(false);
       }
+
     }
 
   	// Update is called once per frame
@@ -206,6 +214,7 @@ public class ShipController : MonoBehaviour {
           this.camScript.zoom();
           this.camScriptCrossHair.zoom();
           this.shipMovementsScript.zoom();
+          this.shipCrosshairScript.zoom();
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1))

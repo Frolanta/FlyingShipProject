@@ -9,7 +9,7 @@ public class ShipMovements : MonoBehaviour {
   public float straff = 10;
   public GameObject reactorPrefab;
   public GameObject littleReactorPrefab;
-  public ShipCrosshair scriptCrosshair;
+
   //reactor pos
   public Transform reactorPos;
   public Transform reactorSideFrontLeftPos;
@@ -125,11 +125,6 @@ public class ShipMovements : MonoBehaviour {
           energie = 100.0f;
       }
     }
-  }
-
-  void FixedUpdate()
-  {
-    this.scriptCrosshair.setSize(this.gameObject.rigidbody.velocity);
   }
 
 	// Update is called once per frame
@@ -287,7 +282,6 @@ public class ShipMovements : MonoBehaviour {
 
   public void zoom()
   {
-    scriptCrosshair.zoom();
     if (this.zoomEnabled)
     {
       this.speed *= 4;

@@ -4,14 +4,21 @@ using System.Collections;
 public class ShipCrosshair : MonoBehaviour {
 
   public float ratioSpeedSize = 1.0f;
-  private float min = 0.40f;
-  private bool zoomed = false;
+  public Transform left;
+  public Transform right;
+  public Transform top;
+  public Transform bottom;
+  public MeshRenderer dot;
+
+  private bool  zoomed = false;
+  private float time = 0.0f;
 
 	// Use this for initialization
 	void Start ()
   {
-    if (!transform.parent.gameObject.networkView.isMine)
+    if (!this.gameObject.networkView.isMine)
       Destroy(this.gameObject.GetComponent<MeshRenderer>());
+      dot.enabled = false;
 	}
 
 	// Update is called once per frame
@@ -20,22 +27,40 @@ public class ShipCrosshair : MonoBehaviour {
 
 	}
 
-  public void setSize(Vector3 velocity)
+  public void setSize(bool moving)
   {
-    float value = ((Mathf.Abs(velocity.x) + Mathf.Abs(velocity.y) + Mathf.Abs(velocity.z)) * ratioSpeedSize) + this.min;
-    transform.localScale = new Vector3(value, 1, value);
+    if (moving && time < 0.15f)
+    {
+      left.Translate(-ratioSpeedSize, 0, 0);
+      right.Translate(ratioSpeedSize, 0, 0);
+      top.Translate(ratioSpeedSize, 0, 0);
+      bottom.Translate(-ratioSpeedSize, 0, 0);
+      time += Time.fixedDeltaTime;
+      if (time >= 5.0f)
+        time = 5.0f;
+    }
+    else if (!moving && time > 0.0f)
+    {
+      left.Translate(ratioSpeedSize, 0, 0);
+      right.Translate(-ratioSpeedSize, 0, 0);
+      top.Translate(-ratioSpeedSize, 0, 0);
+      bottom.Translate(ratioSpeedSize, 0, 0);
+      time -= Time.fixedDeltaTime;
+      if (time <= 0.0f)
+        time = 0.0f;
+    }
   }
 
   public void zoom()
   {
     if (zoomed)
     {
-      this.min *= 3;
+      dot.enabled = false;
       zoomed = false;
     }
     else
     {
-      this.min /= 3;
+      dot.enabled = true;
       zoomed = true;
     }
   }
