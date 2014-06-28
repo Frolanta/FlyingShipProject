@@ -17,7 +17,15 @@ public class ShipCrosshair : MonoBehaviour {
 	void Start ()
   {
     if (!this.gameObject.networkView.isMine)
-      Destroy(this.gameObject.GetComponent<MeshRenderer>());
+    {
+      Destroy(left.gameObject);
+      Destroy(right.gameObject);
+      Destroy(top.gameObject);
+      Destroy(dot.gameObject);
+      Destroy(bottom.gameObject);
+      Destroy(this);
+    }
+    else
       dot.enabled = false;
 	}
 

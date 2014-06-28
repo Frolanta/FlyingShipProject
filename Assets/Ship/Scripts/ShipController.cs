@@ -31,12 +31,12 @@ public class ShipController : MonoBehaviour {
   	public void spawnNewPlayer()
     {
       Transform spawn = respawns[Random.Range(0, this.respawns.Length)].transform;
-      movingLeft = false;
-      movingRight = false;
-      movingFront = false;
-      movingBack = false;
-      barrelLeft = false;
-      barrelRight = false;
+      this.movingLeft = false;
+      this.movingRight = false;
+      this.movingFront = false;
+      this.movingBack = false;
+      this.barrelLeft = false;
+      this.barrelRight = false;
       this.ship = Network.Instantiate(shipPrefab, spawn.position, spawn.rotation, 0) as GameObject;
       //this.ship.rigidbody.interpolation = RigidbodyInterpolation.Interpolate; // use this if add velocity in Update and not in Fixed update
       this.camScript.setTarget(this.ship.transform);
